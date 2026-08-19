@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2b4a7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="融媒体加分管理">
+    <title>区块链学院融媒体中心加分管理系统</title>
+    <link rel="manifest" id="manifestLink">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+            background: #f5f6fa;
+            color: #333;
+            min-height: 100vh;
+            font-size: 14px;
+        }
+
+        /* ========== 登录页样式 ========== */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: #f5f6fa;
+        }
+
+        .login-box {
+            background: #ffffff;
+            padding: 36px 32px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-box h1 {
+            text-align: center;
+            color: #2b4a7c;
+            margin-bottom: 6px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .login-box .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 28px;
+            font-size: 13px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 13px;
+            color: #4a5568;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
+            font-family: inherit;
+        }
+
+        .form-group input:read-only {
+            background: #f7fafc;
+            color: #718096;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2b4a7c;
+            box-shadow: 0 0 0 3px rgba(43, 74, 124, 0.1);
+        }
+
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #2b4a7c;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: #223c66;
+        }
+
+        .btn-success {
+            background: #2f855a;
+            color: #ffffff;
+        }
+
+        .btn-success:hover {
+            background: #276749;
+        }
+
+        .btn-danger {
+            background: #c53030;
+            color: #ffffff;
+        }
+
+        .btn-danger:hover {
+            background: #9b2c2c;
+        }
+
+        .btn-default {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+
+        .btn-default:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 11px;
+            font-size: 15px;
+        }
+
+        /* ========== 主界面样式 ========== */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        }
+
+        .header h1 {
+            font-size: 17px;
+            font-weight: 600;
+            color: #2b4a7c;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+
+        .user-badge {
+            background: #edf2f7;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #4a5568;
+        }
+
+        .role-badge {
+            background: #ecc94b;
+            color: #744210;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .role-badge.normal {
+            background: #bee3f8;
+            color: #2a4365;
+        }
+
+        .wechat-status {
+            font-size: 12px;
+        }
+
+        .wechat-status.bound {
+            color: #2f855a;
+        }
+
+        .wechat-status.unbound {
+            color: #c53030;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* ========== 内容区 ========== */
+        .content {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            border: 1px solid #edf2f7;
+        }
+
+        .card h3 {
+            margin-bottom: 16px;
+            color: #2d3748;
+            font-size: 15px;
+            font-weight: 600;
+            border-left: 4px solid #2b4a7c;
+            padding-left: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* ========== 筛选栏 ========== */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            align-items: flex-end;
+        }
+
+        .filter-bar .form-group {
+            margin-bottom: 0;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        /* ========== 汇总卡片 ========== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .summary-item {
+            background: #f7fafc;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #edf2f7;
+        }
+
+        .summary-item .name {
+            font-weight: 500;
+            font-size: 13px;
+            margin-bottom: 4px;
+            color: #4a5568;
+        }
+
+        .summary-item .score {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2b4a7c;
+        }
+
+        /* ========== 表格样式 ========== */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .record-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 1000px;
+        }
+
+        .record-table th,
+        .record-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #edf2f7;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        .record-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .record-table tr:hover {
+            background: #f7fafc;
+        }
+
+        .record-thumb {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .record-link {
+            color: #2b4a7c;
+            text-decoration: none;
+            font-size: 12px;
+            word-break: break-all;
+            max-width: 150px;
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .record-link:hover {
+            text-decoration: underline;
+        }
+
+        .score-badge {
+            background: #f0fff4;
+            color: #276749;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .type-badge {
+            background: #ebf8ff;
+            color: #2b6cb0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-header h3 {
+            margin-bottom: 0;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ========== 图片模态框 ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal img {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 6px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 28px;
+            color: #ffffff;
+            font-size: 32px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            line-height: 1;
+        }
+
+        /* ========== 文件输入美化 ========== */
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        /* ========== 通用状态 ========== */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #a0aec0;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            .login-box {
+                padding: 28px 20px;
+            }
+
+            .header {
+                padding: 10px 15px;
+            }
+
+            .header h1 {
+                font-size: 15px;
+            }
+
+            .content {
+                padding: 12px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-bar .form-group {
+                width: 100%;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <h1>区块链学院融媒体中心</h1>
+            <p class="subtitle">加分申请管理系统</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>姓名 *</label>
+                    <input type="text" id="loginName" required placeholder="请输入姓名">
+                </div>
+                <div class="form-group">
+                    <label>部门 *</label>
+                    <select id="loginDept" required>
+                        <option value="">请选择部门</option>
+                        <option value="宣发部">宣发部</option>
+                        <option value="编辑部">编辑部</option>
+                        <option value="摄影部">摄影部</option>
+                        <option value="融媒体中心">融媒体中心</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>学院 *</label>
+                    <select id="loginCollege">
+                        <option value="区块链学院" selected>区块链学院</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>班级 *</label>
+                    <input type="text" id="loginClassName" required placeholder="如：区块链技术1班">
+                </div>
+                <div class="form-group">
+                    <label>职位 *</label>
+                    <select id="loginPosition" required>
+                        <option value="">请选择职位</option>
+                        <option value="部长">部长</option>
+                        <option value="副部长">副部长</option>
+                        <option value="主任">主任</option>
+                        <option value="老师">老师</option>
+                        <option value="干事">干事</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>电话号码 *</label>
+                    <input type="tel" id="loginPhone" required placeholder="请输入电话号码">
+                </div>
+                <div class="form-group">
+                    <label>微信号（选填）</label>
+                    <input type="text" id="loginWechat" placeholder="请输入微信号">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">登录 / 注册</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 主界面 -->
+    <div id="mainPage" class="main-container">
+        <div class="header">
+            <h1>融媒体加分管理系统</h1>
+            <div class="user-info">
+                <span id="userName"></span>
+                <span class="user-badge" id="userDept"></span>
+                <span class="user-badge" id="userCollege"></span>
+                <span class="user-badge" id="userClassName"></span>
+                <span class="user-badge" id="userPosition"></span>
+                <span id="roleBadge" class="role-badge"></span>
+                <span id="wechatStatus" class="wechat-status"></span>
+                <div class="header-actions">
+                    <button class="btn btn-sm btn-default" onclick="sharePage()">分享</button>
+                    <button class="btn btn-sm btn-default" onclick="exportBackup()">导出备份</button>
+                    <div class="file-input-wrapper">
+                        <button class="btn btn-sm btn-default">导入备份</button>
+                        <input type="file" accept=".json" onchange="importBackup(event)">
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="logout()">退出</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- 提交加分表单 -->
+            <div class="card">
+                <h3>提交加分申请</h3>
+                <form id="recordForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>部门（自动带出）</label>
+                            <input type="text" id="recordDept" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>学院（自动带出）</label>
+                            <input type="text" id="recordCollege" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>班级（自动带出）</label>
+                            <input type="text" id="recordClassName" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>姓名（自动带出）</label>
+                            <input type="text" id="recordName" readonly>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>日期</label>
+                            <input type="date" id="recordDate">
+                        </div>
+                        <div class="form-group">
+                            <label>类型</label>
+                            <select id="recordType">
+                                <option value="排版">排版</option>
+                                <option value="编辑">编辑</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>加分数值</label>
+                            <input type="number" step="0.1" id="recordScore" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>推文链接（微信公众号）</label>
+                        <input type="url" id="recordLink" placeholder="请输入公众号文章链接">
+                    </div>
+                    <div class="form-group">
+                        <label>上传图片</label>
+                        <input type="file" id="recordImage" accept="image/*">
+                    </div>
+                    <div class="form-group">
+                        <label>备注（可选）</label>
+                        <textarea id="recordRemark" rows="2" placeholder="请输入备注信息"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">提交加分申请</button>
+                </form>
+            </div>
+
+            <!-- 筛选与汇总 -->
+            <div class="card">
+                <h3>筛选与汇总</h3>
+                <div class="filter-bar">
+                    <div class="form-group">
+                        <label>姓名筛选</label>
+                        <input type="text" id="filterName" placeholder="输入姓名搜索" oninput="renderRecords()">
+                    </div>
+                    <div class="form-group">
+                        <label>部门筛选</label>
+                        <select id="filterDept" onchange="renderRecords()">
+                            <option value="">全部部门</option>
+                            <option value="宣发部">宣发部</option>
+                            <option value="编辑部">编辑部</option>
+                            <option value="摄影部">摄影部</option>
+                            <option value="融媒体中心">融媒体中心</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>班级筛选</label>
+                        <input type="text" id="filterClassName" placeholder="输入班级搜索" oninput="renderRecords()">
+                    </div>
+                    <div class="form-group">
+                        <label>类型筛选</label>
+                        <select id="filterType" onchange="renderRecords()">
+                            <option value="">全部类型</option>
+                            <option value="排版">排版</option>
+                            <option value="编辑">编辑</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>开始日期</label>
+                        <input type="date" id="filterStartDate" onchange="renderRecords()">
+                    </div>
+                    <div class="form-group">
+                        <label>结束日期</label>
+                        <input type="date" id="filterEndDate" onchange="renderRecords()">
+                    </div>
+                    <button class="btn btn-default btn-sm" onclick="clearFilter()">清除筛选</button>
+                </div>
+                <div id="summaryGrid" class="summary-grid"></div>
+            </div>
+
+            <!-- 加分记录总表 -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>加分记录总表</h3>
+                    <div class="toolbar">
+                        <button class="btn btn-sm btn-primary" onclick="exportExcel()">导出 Excel</button>
+                        <button class="btn btn-sm btn-primary" onclick="exportWord()">导出 Word</button>
+                    </div>
+                </div>
+                <div class="table-wrapper">
+                    <table id="recordTable" class="record-table">
+                        <thead>
+                            <tr>
+                                <th>部门</th>
+                                <th>学院</th>
+                                <th>班级</th>
+                                <th>姓名</th>
+                                <th>职位</th>
+                                <th>类型</th>
+                                <th>日期</th>
+                                <th>加分</th>
+                                <th>图片</th>
+                                <th>推文链接</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordListBody"></tbody>
+                    </table>
+                </div>
+                <div id="recordEmpty" class="empty-state hidden">暂无加分记录</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片放大模态框 -->
+    <div id="imageModal" class="modal" onclick="closeImageModal()">
+        <button class="modal-close">&times;</button>
+        <img id="modalImage" src="" alt="大图预览">
+    </div>
+
+    <script>
+        // ==================== 存储配置 ====================
+        const STORAGE_KEYS = {
+            users: 'jxvti_users',
+            records: 'jxvti_records',
+            current: 'jxvti_cur'
+        };
+
+        let currentUser = null;
+
+        // ==================== 工具函数 ====================
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        }
+
+        function formatDate(date) {
+            const d = new Date(date);
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        function formatDateTime(timestamp) {
+            const d = new Date(timestamp);
+            const date = formatDate(d);
+            const h = String(d.getHours()).padStart(2, '0');
+            const m = String(d.getMinutes()).padStart(2, '0');
+            return `${date} ${h}:${m}`;
+        }
+
+        function getToday() {
+            return formatDate(new Date());
+        }
+
+        function getData(key) {
+            const raw = localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : [];
+        }
+
+        function setData(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function isManager(user) {
+            return ['部长', '副部长', '主任', '老师'].includes(user.position);
+        }
+
+        // 图片压缩
+        function compressImage(file, maxWidth = 800, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width, h = img.height;
+                        if (w > maxWidth) {
+                            h = (maxWidth / w) * h;
+                            w = maxWidth;
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ==================== 登录逻辑 ====================
+        function login(name, dept, college, className, position, phone, wechat) {
+            let users = getData(STORAGE_KEYS.users);
+            let user = users.find(u => u.name === name && u.phone === phone);
+
+            if (user) {
+                user.dept = dept;
+                user.college = college;
+                user.className = className;
+                user.position = position;
+                user.wechat = wechat || '';
+            } else {
+                user = {
+                    id: generateId(),
+                    name, dept, college, className, position, phone,
+                    wechat: wechat || '',
+                    createdAt: Date.now()
+                };
+                users.push(user);
+            }
+
+            setData(STORAGE_KEYS.users, users);
+            setData(STORAGE_KEYS.current, user);
+            currentUser = user;
+            showMainPage();
+        }
+
+        function logout() {
+            localStorage.removeItem(STORAGE_KEYS.current);
+            currentUser = null;
+            showLoginPage();
+        }
+
+        function showLoginPage() {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('loginForm').reset();
+            document.getElementById('loginCollege').value = '区块链学院';
+        }
+
+        function showMainPage() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainPage').style.display = 'block';
+            updateUserInfo();
+            initPage();
+        }
+
+        function updateUserInfo() {
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userDept').textContent = currentUser.dept;
+            document.getElementById('userCollege').textContent = currentUser.college;
+            document.getElementById('userClassName').textContent = currentUser.className;
+            document.getElementById('userPosition').textContent = currentUser.position;
+
+            const roleBadge = document.getElementById('roleBadge');
+            if (isManager(currentUser)) {
+                roleBadge.textContent = '管理员';
+                roleBadge.className = 'role-badge';
+            } else {
+                roleBadge.textContent = '普通成员';
+                roleBadge.className = 'role-badge normal';
+            }
+
+            const wechatEl = document.getElementById('wechatStatus');
+            if (currentUser.wechat) {
+                wechatEl.textContent = '微信已绑定';
+                wechatEl.className = 'wechat-status bound';
+            } else {
+                wechatEl.textContent = '微信未绑定';
+                wechatEl.className = 'wechat-status unbound';
+            }
+        }
+
+        // ==================== 页面初始化 ====================
+        function initPage() {
+            // 填充表单默认值
+            document.getElementById('recordDate').value = getToday();
+            document.getElementById('recordDept').value = currentUser.dept;
+            document.getElementById('recordCollege').value = currentUser.college;
+            document.getElementById('recordClassName').value = currentUser.className;
+            document.getElementById('recordName').value = currentUser.name;
+
+            // 自动填充分数
+            const scoreInput = document.getElementById('recordScore');
+            if (currentUser.dept === '编辑部' || currentUser.dept === '宣发部') {
+                scoreInput.value = 2.5;
+            } else {
+                scoreInput.value = '';
+            }
+
+            renderRecords();
+        }
+
+        // ==================== 加分记录模块 ====================
+        async function submitRecord(e) {
+            e.preventDefault();
+
+            const date = document.getElementById('recordDate').value;
+            const type = document.getElementById('recordType').value;
+            const score = parseFloat(document.getElementById('recordScore').value);
+            const link = document.getElementById('recordLink').value.trim();
+            const remark = document.getElementById('recordRemark').value.trim();
+            const imageFile = document.getElementById('recordImage').files[0];
+
+            if (!date || isNaN(score)) {
+                alert('请填写完整信息');
+                return;
+            }
+
+            let image = '';
+            if (imageFile) {
+                try {
+                    image = await compressImage(imageFile);
+                } catch (err) {
+                    alert('图片处理失败，请重试');
+                    return;
+                }
+            }
+
+            const records = getData(STORAGE_KEYS.records);
+            const record = {
+                id: generateId(),
+                userId: currentUser.id,
+                name: currentUser.name,
+                dept: currentUser.dept,
+                college: currentUser.college,
+                className: currentUser.className,
+                position: currentUser.position,
+                type,
+                date,
+                score,
+                image,
+                link,
+                remark,
+                timestamp: Date.now()
+            };
+
+            records.unshift(record);
+            setData(STORAGE_KEYS.records, records);
+
+            // 重置表单
+            document.getElementById('recordForm').reset();
+            document.getElementById('recordDate').value = getToday();
+            document.getElementById('recordDept').value = currentUser.dept;
+            document.getElementById('recordCollege').value = currentUser.college;
+            document.getElementById('recordClassName').value = currentUser.className;
+            document.getElementById('recordName').value = currentUser.name;
+            if (currentUser.dept === '编辑部' || currentUser.dept === '宣发部') {
+                document.getElementById('recordScore').value = 2.5;
+            }
+
+            renderRecords();
+            alert('加分申请提交成功！');
+        }
+
+        function renderRecords() {
+            const records = getData(STORAGE_KEYS.records);
+            const nameFilter = document.getElementById('filterName').value.trim();
+            const deptFilter = document.getElementById('filterDept').value;
+            const classNameFilter = document.getElementById('filterClassName').value.trim();
+            const typeFilter = document.getElementById('filterType').value;
+            const startDate = document.getElementById('filterStartDate').value;
+            const endDate = document.getElementById('filterEndDate').value;
+
+            // 筛选
+            let filtered = records.filter(r => {
+                if (nameFilter && !r.name.includes(nameFilter)) return false;
+                if (deptFilter && r.dept !== deptFilter) return false;
+                if (classNameFilter && !r.className?.includes(classNameFilter)) return false;
+                if (typeFilter && r.type !== typeFilter) return false;
+                if (startDate && r.date < startDate) return false;
+                if (endDate && r.date > endDate) return false;
+                return true;
+            });
+
+            // 按日期倒序
+            filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            // 渲染汇总
+            renderSummary(filtered);
+
+            // 渲染表格
+            const tbody = document.getElementById('recordListBody');
+            const emptyEl = document.getElementById('recordEmpty');
+            const tableEl = document.getElementById('recordTable');
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                tableEl.classList.add('hidden');
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+
+            tableEl.classList.remove('hidden');
+            emptyEl.classList.add('hidden');
+
+            tbody.innerHTML = filtered.map(r => {
+                const canDelete = r.userId === currentUser.id || isManager(currentUser);
+                return `
+                <tr data-id="${r.id}">
+                    <td>${r.dept || '-'}</td>
+                    <td>${r.college || '-'}</td>
+                    <td>${r.className || '-'}</td>
+                    <td>${r.name}</td>
+                    <td>${r.position}</td>
+                    <td><span class="type-badge">${r.type || '-'}</span></td>
+                    <td>${r.date}</td>
+                    <td><span class="score-badge">+${r.score}</span></td>
+                    <td>${r.image ? `<img src="${r.image}" class="record-thumb" onclick="showImageModal('${r.image}')" alt="记录图片">` : '-'}</td>
+                    <td>${r.link ? `<a href="${r.link}" target="_blank" class="record-link" title="${r.link}">查看链接</a>` : '-'}</td>
+                    <td style="max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${r.remark || ''}">${r.remark || '-'}</td>
+                    <td>${canDelete ? `<button class="btn btn-sm btn-danger" onclick="deleteRecord('${r.id}')">删除</button>` : '-'}</td>
+                </tr>
+            `}).join('');
+        }
+
+        function renderSummary(records) {
+            const summary = {};
+            records.forEach(r => {
+                summary[r.name] = (summary[r.name] || 0) + r.score;
+            });
+
+            const sorted = Object.entries(summary).sort((a, b) => b[1] - a[1]);
+            const grid = document.getElementById('summaryGrid');
+
+            if (sorted.length === 0) {
+                grid.innerHTML = '';
+                return;
+            }
+
+            grid.innerHTML = sorted.map(([name, score]) => `
+                <div class="summary-item">
+                    <div class="name">${name}</div>
+                    <div class="score">${score.toFixed(1)}</div>
+                </div>
+            `).join('');
+        }
+
+        function deleteRecord(id) {
+            if (!confirm('确定要删除这条加分记录吗？')) return;
+            let records = getData(STORAGE_KEYS.records);
+            records = records.filter(r => r.id !== id);
+            setData(STORAGE_KEYS.records, records);
+            renderRecords();
+        }
+
+        function clearFilter() {
+            document.getElementById('filterName').value = '';
+            document.getElementById('filterDept').value = '';
+            document.getElementById('filterClassName').value = '';
+            document.getElementById('filterType').value = '';
+            document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = '';
+            renderRecords();
+        }
+
+        // ==================== 图片模态框 ====================
+        function showImageModal(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').classList.add('show');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('show');
+        }
+
+        // ==================== 导出功能 ====================
+        function downloadFile(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 导出Excel
+        function exportExcel() {
+            const records = getData(STORAGE_KEYS.records);
+            const depts = ['宣发部', '编辑部', '摄影部', '融媒体中心'];
+
+            let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                      xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                      xmlns="http://www.w3.org/TR/REC-html40">
+                    <head><meta charset="UTF-8">
+                    <style>
+                        body { font-family: "Microsoft YaHei", sans-serif; font-size: 12px; }
+                        table { border-collapse: collapse; }
+                        th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+                        th { background: #f7fafc; font-weight: bold; }
+                        .dept-title { font-weight: bold; font-size: 14px; background: #e2e8f0; }
+                    </style></head><body>
+                    <h2 style="text-align:center;">区块链学院融媒体中心加分记录</h2>
+                    <p style="text-align:right;">导出日期：${getToday()}</p>`;
+
+            depts.forEach(dept => {
+                const deptRecords = records.filter(r => r.dept === dept);
+                if (deptRecords.length === 0) return;
+
+                html += `<p class="dept-title">${dept}</p>`;
+                html += `<table width="100%">
+                    <tr>
+                        <th>推文链接</th>
+                        <th>姓名</th>
+                        <th>学院</th>
+                        <th>班级</th>
+                        <th>加分</th>
+                        <th>部门</th>
+                        <th>类型</th>
+                        <th>日期</th>
+                        <th>备注</th>
+                    </tr>`;
+                deptRecords.forEach(r => {
+                    html += `<tr>
+                        <td>${r.link || '-'}</td>
+                        <td>${r.name}</td>
+                        <td>${r.college || '-'}</td>
+                        <td>${r.className || '-'}</td>
+                        <td>+${r.score}</td>
+                        <td>${r.dept}</td>
+                        <td>${r.type || '-'}</td>
+                        <td>${r.date}</td>
+                        <td>${r.remark || '-'}</td>
+                    </tr>`;
+                });
+                html += '</table><br>';
+            });
+
+            html += '</body></html>';
+            const blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel' });
+            downloadFile(blob, `融媒体加分记录_${getToday()}.xls`);
+        }
+
+        // 导出Word
+        function exportWord() {
+            const records = getData(STORAGE_KEYS.records);
+            
+            // 顺序：编辑部 → 宣发部 → 其他
+            const deptOrder = ['编辑部', '宣发部', '摄影部', '融媒体中心'];
+
+            let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                      xmlns:w="urn:schemas-microsoft-com:office:word" 
+                      xmlns="http://www.w3.org/TR/REC-html40">
+                    <head><meta charset="UTF-8">
+                    <style>
+                        body { font-family: "Microsoft YaHei", sans-serif; font-size: 14px; line-height: 1.6; }
+                        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; vertical-align: middle; }
+                        th { background: #f7fafc; font-weight: bold; font-size: 13px; }
+                        h2 { color: #2b4a7c; border-bottom: 2px solid #2b4a7c; padding-bottom: 8px; }
+                        h3 { color: #2b4a7c; margin-top: 20px; background: #f0f5ff; padding: 8px 12px; border-radius: 4px; }
+                        .record-img { width: 80px; max-height: 80px; object-fit: cover; }
+                    </style></head><body>
+                    <h2 style="text-align:center; border:none;">区块链学院融媒体中心加分记录</h2>
+                    <p style="text-align:right; color:#666;">导出日期：${getToday()}</p>`;
+
+            deptOrder.forEach(dept => {
+                const deptRecords = records.filter(r => r.dept === dept);
+                if (deptRecords.length === 0) return;
+
+                html += `<h3>${dept}</h3>`;
+                html += `<table>
+                    <tr>
+                        <th>姓名</th>
+                        <th>学院</th>
+                        <th>班级</th>
+                        <th>类型</th>
+                        <th>日期</th>
+                        <th>加分</th>
+                        <th>推文链接</th>
+                        <th>图片</th>
+                    </tr>`;
+                deptRecords.forEach(r => {
+                    const imgHtml = r.image 
+                        ? `<img src="${r.image}" class="record-img" alt="图片"/>` 
+                        : '-';
+                    html += `<tr>
+                        <td>${r.name}</td>
+                        <td>${r.college || '-'}</td>
+                        <td>${r.className || '-'}</td>
+                        <td>${r.type || '-'}</td>
+                        <td>${r.date}</td>
+                        <td>+${r.score}</td>
+                        <td>${r.link || '-'}</td>
+                        <td>${imgHtml}</td>
+                    </tr>`;
+                });
+                html += '</table>';
+            });
+
+            html += '</body></html>';
+            const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+            downloadFile(blob, `融媒体加分记录_${getToday()}.doc`);
+        }
+
+        // ==================== 备份与恢复 ====================
+        function exportBackup() {
+            const data = {
+                users: getData(STORAGE_KEYS.users),
+                records: getData(STORAGE_KEYS.records),
+                exportTime: formatDateTime(Date.now()),
+                version: '1.0'
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            downloadFile(blob, `融媒体加分备份_${getToday()}.json`);
+        }
+
+        function importBackup(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!confirm('导入将覆盖当前所有数据，确定继续吗？')) {
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.users) setData(STORAGE_KEYS.users, data.users);
+                    if (data.records) setData(STORAGE_KEYS.records, data.records);
+                    alert('数据导入成功！页面将刷新。');
+                    location.reload();
+                } catch (err) {
+                    alert('导入失败：文件格式不正确');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ==================== 分享功能 ====================
+        function sharePage() {
+            const url = window.location.href;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('链接已复制到剪贴板！\n注意：数据仅保存在当前浏览器中。');
+                }).catch(() => {
+                    prompt('复制以下链接分享：', url);
+                });
+            } else {
+                prompt('复制以下链接分享：', url);
+            }
+        }
+
+        // ==================== 事件绑定 ====================
+        document.getElementById('loginForm').addEventListener('submit', e => {
+            e.preventDefault();
+            const name = document.getElementById('loginName').value.trim();
+            const dept = document.getElementById('loginDept').value;
+            const college = document.getElementById('loginCollege').value;
+            const className = document.getElementById('loginClassName').value.trim();
+            const position = document.getElementById('loginPosition').value;
+            const phone = document.getElementById('loginPhone').value.trim();
+            const wechat = document.getElementById('loginWechat').value.trim();
+
+            if (!name || !dept || !college || !className || !position || !phone) {
+                alert('请填写所有必填项');
+                return;
+            }
+
+            login(name, dept, college, className, position, phone, wechat);
+        });
+
+        document.getElementById('recordForm').addEventListener('submit', submitRecord);
+
+        // ==================== PWA 支持 ====================
+        function initPWA() {
+            // 生成 manifest
+            const manifest = {
+                name: "区块链学院融媒体加分管理",
+                short_name: "加分管理",
+                description: "江西软件职业技术大学区块链学院融媒体中心加分申请管理系统",
+                start_url: "./",
+                display: "standalone",
+                background_color: "#f5f6fa",
+                theme_color: "#2b4a7c",
+                orientation: "portrait-primary",
+                icons: [
+                    {
+                        // 占位图标：蓝色背景白色文字，可替换为真实图标
+                        src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMzIiIGZpbGw9IiMyYjRhN2MiLz4KPHRleHQgeD0iOTYiIHk9IjEyMCIgZm9udC1mYW1pbHk9Ik1pY3Jvc29mdCBZYUhlaSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI4MCIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7pg6jkvZw8L3RleHQ+Cjwvc3ZnPg==",
+                        sizes: "192x192",
+                        type: "image/svg+xml"
+                    },
+                    {
+                        src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iOTYiIGZpbGw9IiMyYjRhN2MiLz4KPHRleHQgeD0iMjU2IiB5PSIzMjAiIGZvbnQtZmFtaWx5PSJNaWNyb3NvZnQgWWFIZWksIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPumDqOS8nDwvdGV4dD4KPC9zdmc+",
+                        sizes: "512x512",
+                        type: "image/svg+xml"
+                    }
+                ]
+            };
+
+            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+            document.getElementById('manifestLink').href = URL.createObjectURL(manifestBlob);
+
+            // 注册 Service Worker
+            if ('serviceWorker' in navigator) {
+                // 内联 Service Worker 代码（通过 Blob URL 注册）
+                const swCode = `
+                    const CACHE_NAME = 'jxvti-score-v1';
+                    const ASSETS = ['./'];
+
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+                        );
+                        self.skipWaiting();
+                    });
+
+                    self.addEventListener('activate', event => {
+                        event.waitUntil(
+                            caches.keys().then(keys => 
+                                Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+                            )
+                        );
+                        self.clients.claim();
+                    });
+
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request).then(response => {
+                                return response || fetch(event.request).then(res => {
+                                    const resClone = res.clone();
+                                    caches.open(CACHE_NAME).then(cache => {
+                                        if (event.request.method === 'GET') {
+                                            cache.put(event.request, resClone);
+                                        }
+                                    });
+                                    return res;
+                                }).catch(() => response);
+                            })
+                        );
+                    });
+                `;
+
+                const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(swBlob);
+
+                navigator.serviceWorker.register(swUrl, { scope: './' })
+                    .then(() => console.log('PWA Service Worker 注册成功'))
+                    .catch(err => console.log('Service Worker 注册失败（不影响正常使用）:', err));
+            }
+        }
+
+        // ==================== 页面加载 ====================
+        window.onload = function() {
+            initPWA();
+
+            // 检查登录状态
+            const saved = localStorage.getItem(STORAGE_KEYS.current);
+            if (saved) {
+                try {
+                    currentUser = JSON.parse(saved);
+                    const users = getData(STORAGE_KEYS.users);
+                    const exists = users.find(u => u.id === currentUser.id);
+                    if (exists) {
+                        currentUser = exists;
+                        setData(STORAGE_KEYS.current, currentUser);
+                        showMainPage();
+                        return;
+                    }
+                } catch (e) {
+                    // 解析失败，走登录页
+                }
+            }
+            showLoginPage();
+        };
+    </script>
+</body>
+</html>
